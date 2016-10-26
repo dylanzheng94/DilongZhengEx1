@@ -28,19 +28,24 @@ public class Ex1_3_JavaProgram extends Application
 	{
 		Logger.print("Entered main()");
 		
+		launch(args);
+		
 		Logger.print("Exiting main()");
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception
 	{
+		Logger.print("Entered start()");
+		
 		m_window = primaryStage;
 		m_window.setTitle("COMP4004 A2");
 		
-		
 		InputScene inputScene = new InputScene();
+		m_inputScene = inputScene.getBuiltScene();
 		
-		
+		m_window.setScene(m_inputScene);
+		m_window.show();
 	}
 
 }
