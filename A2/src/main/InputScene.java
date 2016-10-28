@@ -6,8 +6,13 @@
 
 package main;
 
+// ======================================================================================
+// REFERENCES
+
 import java.util.ArrayList;
 
+import CustomExceptions.InvalidInputException;
+import Interfaces.IScene;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,7 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 
-public class InputScene
+public class InputScene implements IScene
 {
 	// ----------------------------------------------------------------------------------
 	// Properties 
@@ -39,7 +44,7 @@ public class InputScene
 	private Button m_calculateButton;
 	
 	private InputVerifier m_inputVerifier;
-	
+		
 	// ----------------------------------------------------------------------------------
 	// Constructor 
 	
@@ -94,10 +99,12 @@ public class InputScene
 		
 		m_calculateButton = new Button("Calculate");
 		m_calculateButton.setTooltip(new Tooltip("Click to start calculation"));
+		GridPane.setConstraints(m_calculateButton, 0, 4, 2, 1);
 		m_calculateButton.setOnMouseReleased(e ->{
 			Logger.print("Calculate button was clicked and released");
 			attemptCalculation();
 		});
+		m_sceneElements.add(m_calculateButton);
 		
 		
 	}
@@ -114,12 +121,34 @@ public class InputScene
 
 	private void buildScene()
 	{
-		m_inputScene = new Scene(m_grid, 600, 600);	
-		
+		m_inputScene = new Scene(m_grid, 300, 300);	
 	}
 	
 	private void attemptCalculation()
 	{
+		try
+		{
+			verifyUserInput();
+		} 
+		catch (InvalidInputException e)
+		{
+			e.printStackTrace();
+		}
 		
+		Calculator calc = new Calculator();
+		calc.calculateQuadratic(m_inputVerifier.getVerifiedCoeffs());
+	}
+	
+	private void verifyUserInput() throws InvalidInputException
+	{
+		m_inputVerifier = new InputVerifier();
+		
+		for (Control element : m_sceneElements)
+		{
+			if(element instanceof TextField)
+			{
+				m_inputVerifier.IsInt(element, ((TextField) element).getText());
+			}
+		}
 	}
 }
